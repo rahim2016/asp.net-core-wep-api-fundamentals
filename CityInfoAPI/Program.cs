@@ -10,7 +10,8 @@ builder.Services.AddControllers(options =>
 {
     // Control the accept header property either json or xml
     options.ReturnHttpNotAcceptable = true;
-}).AddXmlDataContractSerializerFormatters();
+}).AddNewtonsoftJson()
+.AddXmlDataContractSerializerFormatters();
 
 /*
  
