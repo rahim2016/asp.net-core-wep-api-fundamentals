@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "UU6CxSUvB9yXhWdkvmBrPGsuZkxCCeR396i4Wi1e9umGZRInWaWNs8AV9OLT3zG9h+jhXXRt0Qni0CaZrBjiYg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\RAHIM\\Projects\\MAUI\\CityInfoAPI\\CityInfoAPI\\CityInfoAPI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\RAHIM\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\RAHIM\\.nuget\\packages\\microsoft.openapi\\1.6.14\\microsoft.openapi.1.6.14.nupkg.sha512",
+    "C:\\Users\\RAHIM\\.nuget\\packages\\swashbuckle.aspnetcore\\6.6.2\\swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
+    "C:\\Users\\RAHIM\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.6.2\\swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
+    "C:\\Users\\RAHIM\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.6.2\\swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",
+    "C:\\Users\\RAHIM\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.6.2\\swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512"
+  ],
+  "logs": []
+}
