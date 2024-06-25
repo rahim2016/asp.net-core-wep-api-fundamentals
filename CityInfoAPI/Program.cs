@@ -1,6 +1,8 @@
 using CityInfoAPI;
+using CityInfoAPI.DbContexts;
 using CityInfoAPI.Services;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 // using serilog package for logging and saving logs to a file
@@ -70,6 +72,10 @@ builder.Services.AddTransient<IMailService, CloudMailService>();
 #endif
 
 builder.Services.AddSingleton<CitiesDataStore>();
+
+// Registering the city info context to the container
+builder.Services.AddDbContext<CityInfoContext>(dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["connectionStrings:cityInfoDBConnectionString"]));
+Console.WriteLine(builder.Configuration["connectionStrings:cityInfoDBConnectionString"]);
 
 var app = builder.Build();
 
