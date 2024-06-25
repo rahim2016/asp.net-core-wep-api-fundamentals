@@ -41,7 +41,6 @@ namespace CityInfoAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateFile(IFormFile file)
         {
-
             // VAlidatethe input. put a limit on the file size to avoid large upload attacks.
             // Only accept .pdf files (check content-type)
 

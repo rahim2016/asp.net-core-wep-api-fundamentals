@@ -53,9 +53,21 @@
               "target": "Package",
               "version": "[8.0.6, )"
             },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
+            },
+            "serilog.sinks.console": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "serilog.sinks.file": {
+              "target": "Package",
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
