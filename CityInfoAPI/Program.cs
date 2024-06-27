@@ -3,7 +3,9 @@ using CityInfoAPI.DbContexts;
 using CityInfoAPI.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Reflection;
 
 // using serilog package for logging and saving logs to a file
 Log.Logger = new LoggerConfiguration()
@@ -57,12 +59,38 @@ builder.Services.AddProblemDetails(option =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "City API",
+        Description = "An ASP.NET Core Web API for managing City and points of interest",
+        TermsOfService = new Uri("https://example.com/terms"),
+        Contact = new OpenApiContact
+        {
+            Name = "Rahim NDANE",
+            Url = new Uri("https://www.linkedin.com/in/rahim-ndane-075732141/")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "License",
+            Url = new Uri("https://example.com/license")
+        }
+    });
+
+    // using System.Reflection;
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+});
+
+
 
 // Registering FileExtensionContentTypeProvider  to find the correct content type for any file.
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 
-// Adding custom services to the container
+// -------------- ADDING CUSTOM SERVICES TO THE CONTAINER ----------------------
 
 // Registering the mail service to the container base on the environment using the preprocessor or compiler directive
 #if DEBUG
@@ -75,7 +103,11 @@ builder.Services.AddSingleton<CitiesDataStore>();
 
 // Registering the city info context to the container
 builder.Services.AddDbContext<CityInfoContext>(dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["connectionStrings:cityInfoDBConnectionString"]));
-Console.WriteLine(builder.Configuration["connectionStrings:cityInfoDBConnectionString"]);
+
+// Registering the city info repository to the container
+builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

@@ -1,36 +1,113 @@
-﻿using CityInfoAPI.Models;
+﻿using AutoMapper;
+using CityInfoAPI.Entities;
+using CityInfoAPI.Models;
+using CityInfoAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace CityInfoAPI.Controllers
 {
     [ApiController]
     [Route("api/cities")]
+    [Produces("application/json", "application/xml")]
     public class CitiesController : ControllerBase
     {
         private readonly CitiesDataStore _citiesDataStore;
+        private readonly ICityInfoRepository _cityInfoRepository;
+        private readonly IMapper _mapper;
 
-        public CitiesController(CitiesDataStore citiesDataStore)
+        const int MaxPageSize = 20;
+
+        public CitiesController(ICityInfoRepository cityInfoRepository, IMapper mapper)
         {
-            _citiesDataStore = citiesDataStore ?? throw new ArgumentNullException(nameof(citiesDataStore));
+            _cityInfoRepository = cityInfoRepository ?? throw new ArgumentNullException(nameof(cityInfoRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
+        /// <summary>
+        /// Get a list of cities.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
-        public ActionResult<IEnumerable<CityDto>> GetCities()
+        public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities(string? name, string? searchQuery, int pageNumber = 1, int pageSize = 10)
         {
-            return Ok(_citiesDataStore.Cities);
+            if (pageSize > MaxPageSize)
+            {
+                pageSize = MaxPageSize;
+            }
+
+            var (cities, paginationMetadata) = await _cityInfoRepository.GetCitiesAsyn(name, searchQuery, pageNumber, pageSize);
+
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            return Ok(_mapper.Map<IEnumerable<CityWithoutPointOfInterestDto>>(cities));
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<CityDto> GetCity(int id)
+        /// <summary>
+        /// Get a specific City with or without point of interest.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}", Name = "GetCity")]
+        public async Task<IActionResult> GetCity(int id, bool includePointsOfInterest = false)
         {
-            var cityToReturn = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == id);
+            var city = await _cityInfoRepository.GetCityAsync(id, includePointsOfInterest);
 
-            if (cityToReturn == null)
+            if (city == null)
             {
                 return NotFound();
             }
 
-            return Ok(cityToReturn);
+            if (includePointsOfInterest)
+            {
+                return Ok(_mapper.Map<CityDto>(city));
+            }
+
+            return Ok(_mapper.Map<CityWithoutPointOfInterestDto>(city));
+        }
+
+
+        /// <summary>
+        /// Creates a City.
+        /// </summary>
+        /// <param name="cityDto"></param>
+        /// <returns>A newly created City</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /City
+        ///     {
+        ///        "Name": "New York City",
+        ///        "Description": "The one with that big park."
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="201">Returns the newly created city</response>
+        /// <response code="400">If the city is null</response>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CityWithoutPointOfInterestDto>> CreateCity(CreateCityDto cityDto)
+        {
+            var city = await _cityInfoRepository.CityExistByNameAsync(cityDto.Name);
+            if (city)
+            {
+                return BadRequest("City already exists");
+            }
+
+            var cityEntity = _mapper.Map<City>(cityDto);
+
+            var createdCity = await _cityInfoRepository.AddCity(cityEntity);
+
+            if (createdCity == null)
+            {
+                return StatusCode(500, "A problem happened while handling your request");
+            }
+
+            var cityToReturn = _mapper.Map<CityWithoutPointOfInterestDto>(createdCity);
+
+            return CreatedAtRoute("GetCity", new { id = cityToReturn.Id }, cityToReturn);
         }
     }
 }

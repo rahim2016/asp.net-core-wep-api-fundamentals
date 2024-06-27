@@ -36,7 +36,8 @@ namespace CityInfoAPI.DbContexts
                                new PointOfInterest("Central Park")
                                {
                                    Id = 1,
-                                   CityId = 1
+                                   CityId = 1,
+                                   Description = "A very tall building."
                                },
                                 new PointOfInterest("Empire State Building")
                                 {
