@@ -2,14 +2,17 @@
 using CityInfoAPI.Entities;
 using CityInfoAPI.Models;
 using CityInfoAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace CityInfoAPI.Controllers
 {
-    [ApiController]
+
     [Route("api/cities")]
+    [Authorize]
     [Produces("application/json", "application/xml")]
+    [ApiController]
     public class CitiesController : ControllerBase
     {
         private readonly CitiesDataStore _citiesDataStore;

@@ -114,6 +114,9 @@ namespace CityInfoAPI.Services
             }
         }
 
-
+        public async Task<bool> CityNameMatchesCityId(string? cityName, int cityId)
+        {
+            return await _context.Cities.AnyAsync(c => c.Name == cityName && c.Id == cityId);
+        }
     }
 }

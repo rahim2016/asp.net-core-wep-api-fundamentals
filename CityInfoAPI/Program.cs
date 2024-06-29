@@ -3,6 +3,7 @@ using CityInfoAPI.DbContexts;
 using CityInfoAPI.Services;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Reflection;
@@ -109,6 +110,32 @@ builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+// Registering the authentication service to the container
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Authentication:Issuer"],
+            ValidAudience = builder.Configuration["Authentication:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Convert.FromBase64String(builder.Configuration["Authentication:SecretForKey"]))
+        };
+    });
+
+// Adding the authorization service or policies to the container
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MustBeFromNewYork", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("city", "New York");
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -129,6 +156,8 @@ app.UseHttpsRedirection();
 
 // Used for selecting a given enpoint in the controller 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
