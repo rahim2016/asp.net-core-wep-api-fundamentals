@@ -1,9 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "hUz2bZ1MYNeqN4Joldfk+5Rm4+kc+xqwHCstDVDBTVAvLbhmbs4qWtZ0AxxvGs0Ko9Wz1p3HAx9iH2C4tyLUxw==",
+  "dgSpecHash": "QW3Mye32nk8=",
   "success": true,
   "projectFilePath": "C:\\Users\\RAHIM\\Projects\\ASP\\CityInfoAPI\\CityInfoAPI\\CityInfoAPI.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\RAHIM\\.nuget\\packages\\asp.versioning.abstractions\\8.1.0\\asp.versioning.abstractions.8.1.0.nupkg.sha512",
+    "C:\\Users\\RAHIM\\.nuget\\packages\\asp.versioning.http\\8.1.0\\asp.versioning.http.8.1.0.nupkg.sha512",
+    "C:\\Users\\RAHIM\\.nuget\\packages\\asp.versioning.mvc\\8.1.0\\asp.versioning.mvc.8.1.0.nupkg.sha512",
+    "C:\\Users\\RAHIM\\.nuget\\packages\\asp.versioning.mvc.apiexplorer\\8.1.0\\asp.versioning.mvc.apiexplorer.8.1.0.nupkg.sha512",
     "C:\\Users\\RAHIM\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\RAHIM\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\RAHIM\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

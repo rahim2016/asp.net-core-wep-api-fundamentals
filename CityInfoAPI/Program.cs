@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using CityInfoAPI;
 using CityInfoAPI.DbContexts;
 using CityInfoAPI.Services;
@@ -60,33 +62,6 @@ builder.Services.AddProblemDetails(option =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "City API",
-        Description = "An ASP.NET Core Web API for managing City and points of interest",
-        TermsOfService = new Uri("https://example.com/terms"),
-        Contact = new OpenApiContact
-        {
-            Name = "Rahim NDANE",
-            Url = new Uri("https://www.linkedin.com/in/rahim-ndane-075732141/")
-        },
-        License = new OpenApiLicense
-        {
-            Name = "License",
-            Url = new Uri("https://example.com/license")
-        }
-    });
-
-    // using System.Reflection;
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-
-});
-
-
 
 // Registering FileExtensionContentTypeProvider  to find the correct content type for any file.
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
@@ -136,6 +111,85 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
+// Adding the api versioning to the container
+builder.Services.AddApiVersioning(setupAction =>
+{
+    setupAction.ReportApiVersions = true;
+    setupAction.AssumeDefaultVersionWhenUnspecified = true;
+
+    // set default version to 1.0 in case no version is specified
+    setupAction.DefaultApiVersion = new ApiVersion(1, 0);
+}).AddMvc()
+.AddApiExplorer(setupAction =>
+{
+    setupAction.SubstituteApiVersionInUrl = true;
+});
+
+// Getting the api version description provider from the container by creating an instance of IApiVersionDescriptionProvider
+// Here we are trying to get the versions descriptions of the API
+var apiVersionDescriptionProvider = builder.Services.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    // Iteratng over the available versions descriptions and
+    // Adding the swagger documentation for each version of the API
+    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+    {
+        options.SwaggerDoc($"{description.GroupName}", new OpenApiInfo
+        {
+            Title = "City API",
+            Version = description.ApiVersion.ToString(),
+            Description = "An ASP.NET Core Web API for managing City and points of interest",
+            TermsOfService = new Uri("https://example.com/terms"),
+            Contact = new OpenApiContact
+            {
+                Name = "Rahim NDANE",
+                Url = new Uri("https://www.linkedin.com/in/rahim-ndane-075732141/")
+            },
+            License = new OpenApiLicense
+            {
+                Name = "License",
+                Url = new Uri("https://example.com/license")
+            }
+        });
+    }
+
+    // Adding the security definition to the swagger documentation
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+
+    //  ading the bearer token to the autorization header
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+
+
+    // Tell swagger to include the xml comments in the swagger documentation usinng reflection
+    var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+    options.IncludeXmlComments(xmlCommentsFullPath);
+
+
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -149,7 +203,14 @@ if (!app.Environment.IsDevelopment())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(setupAction =>
+    {
+        var descriptions = app.DescribeApiVersions();
+        foreach (var description in descriptions)
+        {
+            setupAction.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+        }
+    });
 }
 
 app.UseHttpsRedirection();

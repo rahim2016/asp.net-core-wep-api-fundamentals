@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
 namespace CityInfoAPI.Controllers
 {
-    [Route("api/files")]
+    [Route("api/v{version:apiVersion}/files")]
     [Authorize]
     [ApiController]
+    [ApiVersion(1)]
     public class FilesController : ControllerBase
     {
 
@@ -18,7 +20,8 @@ namespace CityInfoAPI.Controllers
                 nameof(fileExtensionContentTypeProvider));
         }
 
-        [HttpGet]
+        [HttpGet("{fileId}")]
+        //[ApiVersion(0.1, Deprecated = true)]
         public ActionResult GetFile(String fileId)
         {
 

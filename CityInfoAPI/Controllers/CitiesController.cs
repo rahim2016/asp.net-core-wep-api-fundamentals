@@ -1,18 +1,19 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using CityInfoAPI.Entities;
 using CityInfoAPI.Models;
 using CityInfoAPI.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace CityInfoAPI.Controllers
 {
 
-    [Route("api/cities")]
-    [Authorize]
+    [Route("api/v{version:apiVersion}/cities")]
+    //[Authorize]
     [Produces("application/json", "application/xml")]
     [ApiController]
+    [ApiVersion(1)]
     public class CitiesController : ControllerBase
     {
         private readonly CitiesDataStore _citiesDataStore;
@@ -33,6 +34,8 @@ namespace CityInfoAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<CityWithoutPointOfInterestDto>), 200)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<CityWithoutPointOfInterestDto>>> GetCities(string? name, string? searchQuery, int pageNumber = 1, int pageSize = 10)
         {
             if (pageSize > MaxPageSize)
@@ -50,9 +53,14 @@ namespace CityInfoAPI.Controllers
         /// <summary>
         /// Get a specific City with or without point of interest.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">The id of the city to get</param>
+        /// <param name="includePointsOfInterest">Whether or not to include the pointd of interest</param>
+        /// <returns>A city with or without points of interest</returns>
+        /// <response code="200">Returns the requested city</response>
         [HttpGet("{id}", Name = "GetCity")]
+        [ProducesResponseType(typeof(CityWithoutPointOfInterestDto), 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetCity(int id, bool includePointsOfInterest = false)
         {
             var city = await _cityInfoRepository.GetCityAsync(id, includePointsOfInterest);

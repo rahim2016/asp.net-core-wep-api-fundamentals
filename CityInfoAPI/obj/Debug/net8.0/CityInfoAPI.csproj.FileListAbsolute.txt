@@ -59,7 +59,6 @@ C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\staticwebas
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.CityInfoAPI.props
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\staticwebassets.pack.json
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\scopedcss\bundle\CityInfoAPI.styles.css
-C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\CityInfoAPI.csproj.CopyComplete
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\CityInfoAPI.dll
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\refint\CityInfoAPI.dll
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\CityInfoAPI.pdb
@@ -177,7 +176,6 @@ C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\runtimes\wi
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\AutoMapper.dll
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\CityInfoAPI.xml
-C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\CityInfoAPI.xml
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
@@ -186,3 +184,8 @@ C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\System.Iden
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
 C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Asp.Versioning.Abstractions.dll
+C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Asp.Versioning.Http.dll
+C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Asp.Versioning.Mvc.dll
+C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\bin\Debug\net8.0\Asp.Versioning.Mvc.ApiExplorer.dll
+C:\Users\RAHIM\Projects\ASP\CityInfoAPI\CityInfoAPI\obj\Debug\net8.0\CityInfo.B80C15CD.Up2Date
