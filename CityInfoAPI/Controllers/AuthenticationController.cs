@@ -22,11 +22,30 @@ namespace CityInfoAPI.Controllers
 
 
 
+        /// <summary>
+        /// user authentication.
+        /// </summary>
+        /// <param name="AuthenticationRequestBody"></param>
+        /// <returns>user's token</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /PointOfInterest
+        ///     {
+        ///        "username": "RahimPamelo",
+        ///        "password": "This is a relatively long sentence that acts as my password"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Generates the user's token</response>
+        /// <response code="400">If the request properties is not correct</response>
         [HttpPost("authenticate")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<string> Authenticate(AuthenticationRequestBody authenticationRequestBody)
         {
             // Step 1: Validate the user credentials
-            var user = ValidateUserCredentials(authenticationRequestBody.UserName, authenticationRequestBody.Password);
+            var user = ValidateUserCredentials(authenticationRequestBody.Username, authenticationRequestBody.Password);
             if (user == null)
             {
                 return Unauthorized();

@@ -1,0 +1,31 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@schema=https
+@hostname=localhost
+@port=7117
+
+GET {{schema}}://{{hostname}}:{{port}}/api/v1/cities
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZ2l2ZW5fbmFtZSI6IlJhaGltIiwiZmFtaWx5X25hbWUiOiJQYW1lbG8iLCJjaXR5IjoiQW50d2VycCIsIm5iZiI6MTcyMDI0NjYxNCwiZXhwIjoxNzIwMjUwMjE0LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MTE3IiwiYXVkIjoiY2l0eWluZm9hcGkifQ.0rOU300AERAqITNPxE69LXS0t_cjAA4pkoiQwtSw9UM
+
+###
+GET {{schema}}://{{hostname}}:{{port}}/api/v1/cities
+Accept: application/xml
+
+###
+POST {{schema}}://{{hostname}}:{{port}}/api/v1/cities/1/pointsofinterest
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Another name for testing",
+  "description": "Another description for testing"
+}
+
+###
+POST {{schema}}://{{hostname}}:{{port}}/api/v1/authentication/authenticate
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "RahimPamelo",
+  "password": "This is a relatively long sentence that acts as my password"
+}

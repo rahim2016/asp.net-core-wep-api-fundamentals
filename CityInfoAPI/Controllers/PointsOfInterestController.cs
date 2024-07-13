@@ -2,13 +2,14 @@
 using AutoMapper;
 using CityInfoAPI.Models;
 using CityInfoAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfoAPI.Controllers
 {
     [Route("api/v{version:apiVersion}/cities/{cityId}/pointsofinterest")]
-    //[Authorize]
+    [Authorize]
     //[Authorize(Policy = "MustBeFromNewYork")]
     [Produces("application/json", "application/xml")]
     [ApiController]
@@ -77,7 +78,26 @@ namespace CityInfoAPI.Controllers
 
         }
 
+        /// <summary>
+        /// Creates a PointOfInterest.
+        /// </summary>
+        /// <param name="cityDto"></param>
+        /// <returns>A newly created PointOfInterest</returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /PointOfInterest
+        ///     {
+        ///        "Name": "PointOfInterest",
+        ///        "Description": "The one with that big park."
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="201">Returns the newly created PointOfInterest</response>
+        /// <response code="400">If the PointOfInterest is null</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<PointOfInterestDto>> CreatePointOfInterest(int cityId, PointOfInterestForCreationDto pointOfInterest)
         {
 

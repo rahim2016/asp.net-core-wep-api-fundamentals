@@ -4,6 +4,25 @@
         <name>CityInfoAPI</name>
     </assembly>
     <members>
+        <member name="M:CityInfoAPI.Controllers.AuthenticationController.Authenticate(CityInfoAPI.Models.AuthenticationRequestBody)">
+             <summary>
+             user authentication.
+             </summary>
+             <param name="AuthenticationRequestBody"></param>
+             <returns>user's token</returns>
+             <remarks>
+             Sample request:
+            
+                 POST /PointOfInterest
+                 {
+                    "username": "RahimPamelo",
+                    "password": "This is a relatively long sentence that acts as my password"
+                 }
+            
+             </remarks>
+             <response code="200">Generates the user's token</response>
+             <response code="400">If the request properties is not correct</response>
+        </member>
         <member name="M:CityInfoAPI.Controllers.CitiesController.GetCities(System.String,System.String,System.Int32,System.Int32)">
             <summary>
             Get a list of cities.
@@ -38,6 +57,25 @@
              </remarks>
              <response code="201">Returns the newly created city</response>
              <response code="400">If the city is null</response>
+        </member>
+        <member name="M:CityInfoAPI.Controllers.PointsOfInterestController.CreatePointOfInterest(System.Int32,CityInfoAPI.Models.PointOfInterestForCreationDto)">
+             <summary>
+             Creates a PointOfInterest.
+             </summary>
+             <param name="cityDto"></param>
+             <returns>A newly created PointOfInterest</returns>
+             <remarks>
+             Sample request:
+            
+                 POST /PointOfInterest
+                 {
+                    "Name": "PointOfInterest",
+                    "Description": "The one with that big park."
+                 }
+            
+             </remarks>
+             <response code="201">Returns the newly created PointOfInterest</response>
+             <response code="400">If the PointOfInterest is null</response>
         </member>
         <member name="T:CityInfoAPI.Migrations.CityInfoDbInitialMigration">
             <inheritdoc />

@@ -3,6 +3,7 @@ using AutoMapper;
 using CityInfoAPI.Entities;
 using CityInfoAPI.Models;
 using CityInfoAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -10,7 +11,7 @@ namespace CityInfoAPI.Controllers
 {
 
     [Route("api/v{version:apiVersion}/cities")]
-    //[Authorize]
+    [Authorize]
     [Produces("application/json", "application/xml")]
     [ApiController]
     [ApiVersion(1)]
@@ -57,13 +58,13 @@ namespace CityInfoAPI.Controllers
         /// <param name="includePointsOfInterest">Whether or not to include the pointd of interest</param>
         /// <returns>A city with or without points of interest</returns>
         /// <response code="200">Returns the requested city</response>
-        [HttpGet("{id}", Name = "GetCity")]
+        [HttpGet("{cityId}", Name = "GetCity")]
         [ProducesResponseType(typeof(CityWithoutPointOfInterestDto), 200)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCity(int id, bool includePointsOfInterest = false)
+        public async Task<IActionResult> GetCity(int cityId, bool includePointsOfInterest = false)
         {
-            var city = await _cityInfoRepository.GetCityAsync(id, includePointsOfInterest);
+            var city = await _cityInfoRepository.GetCityAsync(cityId, includePointsOfInterest);
 
             if (city == null)
             {

@@ -1,8 +1,13 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using CityInfoAPI;
 using CityInfoAPI.DbContexts;
 using CityInfoAPI.Services;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,7 +19,6 @@ using System.Reflection;
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
-    .WriteTo.File("logs/cityinfo.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +35,41 @@ builder.Logging.AddConsole();
  */
 
 // Telling asp.net to use serilog for logging instead of the default logging
-builder.Host.UseSerilog();
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+if (environment == Environments.Development)
+{
+    // serilog for logging for development environment
+    builder.Host.UseSerilog((context, loggerConfiguration) => loggerConfiguration
+           .MinimumLevel.Debug()
+           .WriteTo.Console()
+       );
+}
+else
+{
+
+    // Creating  a secret client to get secret key from the azure key vault
+    var secretClient = new SecretClient(
+        new Uri("https://cityinfoapi-keyvault.vault.azure.net/"),
+        new DefaultAzureCredential());
+
+    // Calling the azure key vault on the configuration object
+    // to add secret client as source of configuration
+    builder.Configuration.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+
+    // serilog for logging for production environment
+    builder.Host.UseSerilog((context, loggerConfiguration) => loggerConfiguration
+        .MinimumLevel.Debug()
+        .WriteTo.Console()
+        .WriteTo.File("logs/cityinfo.txt", rollingInterval: RollingInterval.Day)
+        .WriteTo.ApplicationInsights(new TelemetryConfiguration()
+        {
+            InstrumentationKey = builder.Configuration["ApplicationInsightsInstrumentationKey"]
+        }, TelemetryConverter.Traces)
+    );
+
+}
+
 
 
 // Add AddXmlDataContractSerializerFormatters() to return content also as xml other than json only.
@@ -190,6 +228,14 @@ builder.Services.AddSwaggerGen(options =>
 
 });
 
+// Configuring the forward headers middleware to the application
+// do this before deploying to production.
+// this is not required in development phase
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -197,10 +243,18 @@ var app = builder.Build();
 // Adding the middleware to handle exceptions both in development and production environment
 if (!app.Environment.IsDevelopment())
 {
+    //app.UseDeveloperExceptionPage();
     app.UseExceptionHandler();
 }
 
-if (app.Environment.IsDevelopment())
+
+// Configuring the middleware to handle the forwarded headers
+// do this before deploying to production.
+// this is not required in development phase
+app.UseForwardedHeaders();
+
+/*
+ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(setupAction =>
@@ -212,6 +266,20 @@ if (app.Environment.IsDevelopment())
         }
     });
 }
+ */
+
+// Enable for production & development environment
+app.UseSwagger();
+app.UseSwaggerUI(setupAction =>
+{
+    var descriptions = app.DescribeApiVersions();
+    foreach (var description in descriptions)
+    {
+        setupAction.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+    }
+});
+
+
 
 app.UseHttpsRedirection();
 
